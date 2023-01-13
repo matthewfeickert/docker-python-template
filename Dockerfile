@@ -14,11 +14,45 @@ RUN python -m venv /usr/local/venv && \
         awkward \
         hist \
         mplhep \
-        iminuit
+        iminuit && \
+    python -m pip list
 
 # Build lots of complicated software with lots of dependencies
 # but install them under /usr/local/venv
 # ...
+
+RUN apt-get -qq -y update && \
+    apt-get -qq -y install \
+      gcc \
+      g++ \
+      zlib1g \
+      zlib1g-dev \
+      libbz2-dev \
+      wget \
+      curl \
+      make \
+      cmake \
+      rsync \
+      libboost-all-dev && \
+    apt-get -y autoclean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG FASTJET_VERSION=3.4.0
+RUN mkdir /code && \
+    cd /code && \
+    wget http://fastjet.fr/repo/fastjet-${FASTJET_VERSION}.tar.gz && \
+    tar xvfz fastjet-${FASTJET_VERSION}.tar.gz && \
+    cd fastjet-${FASTJET_VERSION} && \
+    ./configure --help && \
+    export CXX=$(command -v g++) && \
+    ./configure \
+      --prefix=/usr/local/venv && \
+    make --jobs $(nproc --ignore=1) && \
+    make check && \
+    make install && \
+    python -m pip --no-cache-dir install --upgrade "fastjet~=${FASTJET_VERSION}.0" && \
+    rm -rf /code
 
 FROM base
 
