@@ -66,7 +66,9 @@ RUN apt-get -qq -y update && \
       g++ \
       wget \
       curl \
-      git && \
+      git \
+      vim \
+      emacs && \
     apt-get -y autoclean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
@@ -87,7 +89,7 @@ RUN adduser \
     cp /root/.bashrc /etc/.bashrc && \
     echo 'if [ -f /etc/.bashrc ]; then . /etc/.bashrc; fi' >> /etc/profile
 
-COPY --from=builder --chown=docker /usr/local/venv /usr/local/venv
+COPY --from=builder --chown=docker --chmod=777 /usr/local/venv /usr/local/venv
 
 USER docker
 
