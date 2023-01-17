@@ -4,7 +4,7 @@ all: image
 
 image:
 	docker pull python:3.10-slim-bullseye
-	docker build \
+	docker buildx build \
 	--file Dockerfile \
 	--build-arg BASE_IMAGE=python:3.10-slim-bullseye \
 	--tag matthewfeickert/docker-python-template:latest \
