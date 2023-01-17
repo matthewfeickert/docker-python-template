@@ -4,7 +4,7 @@ all: image
 
 image:
 	docker pull python:3.10-slim-bullseye
-	docker build \
+	docker buildx build \
 	--file Dockerfile \
 	--build-arg BASE_IMAGE=python:3.10-slim-bullseye \
 	--tag matthewfeickert/docker-python-template:latest \
@@ -15,7 +15,7 @@ run_default:
 		--rm \
 		-ti \
 		--user $(shell id -u $(USER)):$(shell id -g $(USER)) \
-		--volume $(shell pwd):/work \
+		--volume $(shell pwd):/home/docker/work \
 		matthewfeickert/docker-python-template:latest \
 		/bin/bash
 
@@ -25,7 +25,7 @@ run_non_default:
 		--rm \
 		-ti \
 		--user 2000:2000 \
-		--volume $(shell pwd):/work \
+		--volume $(shell pwd):/home/docker/work \
 		--workdir /work \
 		matthewfeickert/docker-python-template:latest \
 		/bin/bash

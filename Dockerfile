@@ -61,17 +61,20 @@ ENV PATH=/usr/local/venv/bin:"${PATH}"
 
 # Install any packages needed by default user
 RUN apt-get -qq -y update && \
-    apt-get -qq -y install \
+    apt-get -qq -y install --no-install-recommends \
       gcc \
       g++ \
       wget \
       curl \
-      git && \
+      git \
+      vim \
+      emacs && \
     apt-get -y autoclean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 # Create non-root user "docker" with uid 1000
+# and universal directory /work
 RUN adduser \
       --shell /bin/bash \
       --gecos "default user" \
@@ -83,11 +86,12 @@ RUN adduser \
     chown -R docker /home/docker/work && \
     mkdir /work && \
     chown -R docker /work && \
+    chmod -R 777 /work && \
     printf '\nexport PATH=/usr/local/venv/bin:"${PATH}"\n' >> /root/.bashrc && \
     cp /root/.bashrc /etc/.bashrc && \
     echo 'if [ -f /etc/.bashrc ]; then . /etc/.bashrc; fi' >> /etc/profile
 
-COPY --from=builder --chown=docker /usr/local/venv /usr/local/venv
+COPY --from=builder --chown=docker --chmod=777 /usr/local/venv /usr/local/venv
 
 USER docker
 
