@@ -61,7 +61,7 @@ ENV PATH=/usr/local/venv/bin:"${PATH}"
 
 # Install any packages needed by default user
 RUN apt-get -qq -y update && \
-    apt-get -qq -y install \
+    apt-get -qq -y install --no-install-recommends \
       gcc \
       g++ \
       wget \
