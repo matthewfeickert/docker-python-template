@@ -74,6 +74,7 @@ RUN apt-get -qq -y update && \
     rm -rf /var/lib/apt/lists/*
 
 # Create non-root user "docker" with uid 1000
+# and universal directory /work
 RUN adduser \
       --shell /bin/bash \
       --gecos "default user" \
@@ -85,6 +86,7 @@ RUN adduser \
     chown -R docker /home/docker/work && \
     mkdir /work && \
     chown -R docker /work && \
+    chmod -R 777 /work && \
     printf '\nexport PATH=/usr/local/venv/bin:"${PATH}"\n' >> /root/.bashrc && \
     cp /root/.bashrc /etc/.bashrc && \
     echo 'if [ -f /etc/.bashrc ]; then . /etc/.bashrc; fi' >> /etc/profile
